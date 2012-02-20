@@ -1,0 +1,75 @@
+body { 
+    background : gray;
+}
+
+.prism-noimage {
+    background : url(../images/noimage.jpeg);
+}
+
+.prism-region {
+    background : gray;
+    border : thin dashed black;
+    opacity : 0.7;
+}
+
+.prism-hideRegions .prism-region {
+    display : none;
+}
+
+.prism-region.selected {
+    background : blue;
+    border : thin solid white;
+    opacity : 0.7;
+}
+
+.prism-region-label {
+    background : transparent;
+    color : yellow;
+    font-size : 12pt;
+    display : block;
+    text-align : center;
+}
+
+.prism-region-handle {
+    position : absolute;
+    background : yellow;
+}
+.prism-north {
+    left : 0;
+    top : 0;
+    width : 100%;
+    height : 5;
+}
+.prism-south {
+    left : 0;
+    bottom : 0;
+    width : 100%;
+    height : 5;
+}
+.prism-east {
+    right : 0;
+    top : 0;
+    width : 5;
+    height : 100%;
+}
+.prism-west {
+    left : 0;
+    top : 0;
+    width : 5;
+    height : 100%;
+}
+
+
+.prism-dd-proxy {
+    border : thin dashed blue;
+}
+
+.hlp-entry {
+    padding: 6;
+}
+.hlp-hdr {
+    font-weight: bold;
+}
+.hlp-entry td {
+    font-size : 10pt;
+}

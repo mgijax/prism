@@ -1,0 +1,11 @@
+#!/bin/csh -f
+cd `dirname $0`/..
+rm -f Configuration
+
+rm -f server/prismConfig.py
+rm -f server/*.pyc
+
+rm -f www/js/prism-config.js
+rm -f www/js/ext
+rm -fr www/js/${EXT}
+

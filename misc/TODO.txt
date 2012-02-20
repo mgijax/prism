@@ -1,0 +1,110 @@
+
+1. It would be very useful to have keyboard shortcuts 
+    option-z Undo
+    option-r Redo
+    option-x  Delete selected
+    DEL, BACKSPACE Delete selected
+    option-shift-x Clear (delete all)
+    option-g GridAssign
+    option-o OnePane
+    option-c Cover
+    option-"-" Zoom-out
+    option-"+" Zoom-in
+    option-0   Original size
+    //option-UP prev figure
+    //option-DOWN next figure
+
+    MOSTLY DONE. prev/next figure are not yet implemented.
+
+2. A select all panes would be a good feature after you've made all the splits.
+    ADDED. SelectAll button in toolbar.
+
+3. The assigned pane label is placed in the upper left corner of the image pane and that is common in figures as well.  This makes it hard to confirm that the correct label is on the correct pane.  When we assign the pane label to the image pane, it might be better placed in the center of the pane.
+    FIXED. Changed CSS rules to center the labels horizontally. Vertical placement is offset a fixed amount (40px) from the top (centering vertically is difficult).
+
+4. We would like the pane labels in the side panel displayed alphabetically rather than as entered in the image stub, if possible.
+    FIXED. (Need tweak: sort is case sensitive).
+
+5. It would be useful to be able to tweak the box that you drag (e.g. ability to drag one of the sides further if you didn’t make it big enough, rather than have to delete it and start over).
+
+6. What is the limit for this prototype (how many figures can it handle loading)?  Loading J:122989 made it hang up (or maybe I just didn’t give it long enough).
+
+7. Bug?  I can only make a selection by clicking at the top left and dragging to bottom right.  Any other start point (like starting at top right and dragging to bottom left) makes the selected region elsewhere.  It’s ok if that is the way it has to be, I was just curious.
+    FIXED. 
+
+8. Comment from the meeting:  We would like to be able to view panes on the fly (modifications made in the EI should be visible right away if you reenter the J#). 
+    SHOULD HAPPEN anyway if it's pointed at the production db.
+
+9. Comment from the meeting:  We would like to be able to modify previously stored coordinates.
+    OK.
+
+10. The current image submission is password protected.  Can that also be incorporated?  Could it be by session (you log in once for as long as you are working) rather than having to be entered for each j# you work on?
+
+11. The EI has 2 fields that describe the X and Y dimensions of the attached jpg.  (Not sure how this is calculated – done during submission to pixdb or is it by the ei?).  In looking at the new tool, the coordinates are listed as x:0 y:0 w:450 h:163 (for instance).  Does that matter?  I’m thinking of our many single pane images from our loads.  What I expect we’ll do is to create an electronic load for the new db table - loading the full-size coordinates currently in the db for the full-size image into the null pane label for that stub.  Would those coordinates work or would they have to be in a different format?
+	CLOSED. Nothing to do.
+
+12. Is it possible to add a filter?  For instance, I code a large paper (or electronic load) with many images, attach those images and pane coordinates.  But later find that more image stubs need to be added.  When I call up that J# in the new tool, there will be many figures listed, most of which will have their images and coordinates already.  We’d always still like to see them in case we need to modify them, but would it be possible to add a filter we could click to ‘show only those figures with no coordinates’?  Please say if it would be a huge project to add it, we have a workaround for this currently.
+
+13. The db table for storing the coordinates in the interim should be responsive to modifications we make in the EI, (to J# or figure/pane labels)
+
+14. Will it be possible for multiple people to be using this tool at the same time (for different j#’s)?  
+
+15. When maximized, the editing window should resize whenever the browser window is resized. Right now it doesn't.
+    FIXED. Created viewport (layout=fit), added editor window to it, maximized.
+
+16. When dragging pane labels over regions, the regions are selected on mouseover, but fail to de-select on mouseout.
+	FIXED. Updated DropZone (onNodeEnter, onNodeOver, onNodeOut).
+
+17. Regions are not correctly re-created when we re-open an image. If user associated multiple panes with same region, we get duplicate regions overlaying one another (each associated with just one pane).
+	FIXED. Needed to do appropriate check in openImage().
+
+18. Comment from meeting: should have some kind of warning if user has assigned some but not all pane labels.
+
+19. BUG. (Severe) Undo/Redo. Pane associations disappear. To recreate: (1) create a region (2) make a pane assignment (3) split the pane (4) undo (5) redo. When the redo happens, the pane assignment disappears.
+	FIXED. Root of the problem was not undo/redo, but in how/when actualGeometry coordinates were being updated relative to resize events firing. Change applied to Region.split() method.
+
+20. Does not deal gracefully with
+	- unfound J#
+	- J# with no figures
+	- figures with no images
+	- figures with no panes
+
+21. Display short citation for J#.
+22. Display mouse coordinates.
+
+23. BUG. (minor) The click handler is called even when user drags. 
+    FIXED. Removed independent click handlers in regions and image. All mouse events
+    now handled by drag/drop zones.
+
+24. Could you possibly move the ‘cover’ and ‘delete’ buttons over next to the ‘redo’ button?  The others are fine to leave over on the right.
+    DONE. 
+
+25. I’m finding that the page up and page down buttons on my keyboard don’t work on the image.  Can they?
+    DONE. Added key mappings.
+
+26. BUG.  "I accidentally hit the space bar once and then the GridAssign didn’t work properly."
+Reason: If a button has focus, and the user hits the space bar, the button is clicked. This is actually an accessibility feature. The fix is to give focus back to the editor's focusEl after every button click. 
+    DONE. (Add click handler to each button in the toolbar.).
+
+27. I have some questions about the ClickAssign feature.  I dragged A, B and C to assign the first 3 panes, but then wanted to ClickAssign for the rest (I had forgotten to click it before I started).  However, it started with A rather than D.  It would be really helpful if the ClickAssign could start with the next empty coordinates for the figure.
+    MODIFIED requirement: be able to specify starting point.
+    DONE. Now works as follows: While in clickassign mode, when a region is clicked, the currently selected pane (in the table grid) is associated with that region, and the next pane is selected (wrapping around to first pane in figure as necessary). At any time, use can select a different pane in the grid, and assignments will continue from there.
+
+28. Also, if all panes have coordinates, it would be good if the ClickAssign would not do any further assignments.  I found myself accidentally clicking in the image and reassigning coordinates.
+    DEFERRED.
+
+29. Comment from the meeting:  did you mention that there would be a way to have the tool auto-populated with a list o f J# that don’t have coordinates?  So the curator could just have the next J# on the list load automatically after they hit save?  What if multiple curators were working at the same time?  There is an SQL that lists all of the GXD images with their panes.  We could provide that list if you need it.
+
+30. Implement region merging.
+
+31. Implement send-to-back/bring-to-front.
+
+32. In grid table, if you have multiple selections, and you click on a selected row, the others
+should be de-selected. Right now, they stay selected. 
+
+33. Implement image upload (ie., functionality to replace current image submission interface).
+
+34. Should not be able to draw regions when there is no image.
+
+35. When drawing a region, the end result is a little off from where the mouseup occurred.
+    FIXED.
