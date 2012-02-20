@@ -15,6 +15,10 @@ PRISM.Editor = Ext.extend(Ext.Window, {
     autoScroll : true,
     minRegionWidth : 10,
     minRegionHeight : 10,
+
+    /**
+     * initComponent
+     */
     initComponent : function(){
 	this.layout = 'border';
 	this.items = [
@@ -84,6 +88,9 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 
     },
 
+    /**
+     * Initializes key mappings for the editor.
+     */
     initKeys : function(){
 	// create a focuassable element. Needed so we can be sure to catch key events.
 	this.focusEl = Ext.DomHelper.append(this.el,
@@ -167,6 +174,10 @@ PRISM.Editor = Ext.extend(Ext.Window, {
     },
 
     // ---------------
+    /**
+     * Event handler for arrow keys. Nudges the selected region(s) in the
+     * arrow's direction by 1 pixel. If the shift key is held, nudges by 10 px.
+     */
     handleArrow : function(k,e){
 	var dx = 0, dy = 0, m = e.shiftKey? 10 : 1;
 	switch(k){
@@ -183,10 +194,16 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	    }, this);
     },
 
+    /**
+     * Saves all accumu,ated changes to the databasew.
+     */
     save : function(){
 	this.grid.store.save();
     },
 
+    /**
+     * Callback after a save operation. (How does one check for success??)
+     */
     afterSave : function(){
 	this.clearUndo();
     },
@@ -223,7 +240,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
     },
 
     /** 
-     * Implements the redo action.o
+     * Implements the redo action.
      */
     redo : function(){
 	var rs = this.redoStack.pop();
@@ -309,6 +326,10 @@ PRISM.Editor = Ext.extend(Ext.Window, {
     },
 
     // ---------------
+    /**
+     * Opens a window that allows user to specify user name and password for
+     * database logins.
+     */
     openLogin : function(){
 	var lw = this.loginWindow,
 	    s = this.grid.store;
@@ -359,6 +380,10 @@ PRISM.Editor = Ext.extend(Ext.Window, {
     },
 
     // ---------------
+    /**
+     * Opens a window that allows user to upload image(s) for this Jnum.
+     * (Partion implementation - NOT functional!)
+     */
     openUpload : function(){
 	if(!this.uploadWindow){
 	    var cfg = {
@@ -394,20 +419,32 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 
     // ---------------
 
+    /**
+     * Returns the list (a MixedCollection) of pane records for the currently opened image.
+     */
     getCurrentPanes : function(){
 	return this.currPanes;
     },
 
+    /**
+     * Returns a (possibly empty) list of the panes currently selected in the grid view.
+     */
     getSelectedPanes : function(){
 	return this.grid.getSelectionModel().getSelections();
     },
 
     // ---------------
 
+    /**
+     * Returns the URL that is the currently displayed image's src attribute.
+     */
     getUrl : function(){
 	return this.image.el.dom.src;
     },
 
+    /**
+     * Sets the displayed image url; switches the image.
+     */
     setUrl : function(url){
 	var cu = this.getUrl();
 	if( cu !== url ){
@@ -415,6 +452,17 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	    this.lmask.show();
 	    this.osi.src = url;
 	}
+    },
+
+    /** 
+     * Callback called when a new imgage has been loaded into the offscreen image (osi).
+     * Resets the displayed image's size to the actual (osi) size, and sets the displayed image's
+     * src to the same url. (Browser has image cached, so this doesn't cost us anything.)
+     */
+    imageLoaded : function(){
+	this.image.setSize( this.osi.width, this.osi.height );
+	this.lmask.hide();
+	this.focus();
     },
 
     // ---------------
@@ -460,10 +508,16 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	    action.apply(scope, args||[]);
     },
 
+    /**
+     * Returns the currently loaded Jnum.
+     */
     getJnum : function(){
 	return this.jnum;
     },
 
+    /**
+     * Sets the jnum; loads the new jnum's data and opens its first image (if any).
+     */
     setJnum : function(jnum){
 	this.clearUndo();
 	this.removeRegions();
@@ -473,13 +527,9 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	this.grid.store.load({ params : { jnum:this.jnum } });
     },
 
-    jnumHandler : function(jnum){
-	jnum = "" + ((typeof(jnum) === "object") ? jnum.getValue() : jnum);
-	jnum = (jnum.indexOf("J:") === 0 ? jnum : "J:"+jnum);
-	if(this.jnum !== jnum) 
-	    this.saveBeforeAction(this.setJnum, this, [jnum]);
-    },
-
+    /**
+     * Callback called after new jnum's data have been loaded.
+     */
     jnumLoaded : function(){
 	var id, r;
 	var s = this.grid.getStore();
@@ -500,12 +550,30 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	s.commitChanges();
     },
 
+    /**
+     * Handler called when user enters a J# in the text field.
+     */
+    jnumHandler : function(jnum){
+	jnum = "" + ((typeof(jnum) === "object") ? jnum.getValue() : jnum);
+	jnum = (jnum.indexOf("J:") === 0 ? jnum : "J:"+jnum);
+	if(this.jnum !== jnum) 
+	    this.saveBeforeAction(this.setJnum, this, [jnum]);
+    },
+
     // ---------------
 
+    /**
+     * Returns the current magnification level.
+     */
     getMagnification : function(){
         return this.magnification;
     },
 
+    /**
+     * Sets the current magnification level. This is a multiplier. Thus
+     * a magnification of 1.0 is no magnification (i.e., original size),
+     * numbers > 1 will "zoom in" and those between 0 and 1 "zoom out".
+     */
     setMagnification : function(mag){
 	mag = mag ? mag : this.magnification;
 	this.magnification = mag;
@@ -516,20 +584,33 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	    }, this);
     },
 
+    /**
+     * Shorthand for multiplying current magnification by the zoom factor.
+     */
     zoomIn : function(){ 
         this.setMagnification(this.getMagnification() * this.zoomFactor);
     },
 
+    /**
+     * Shorthand for dividing current magnification by the zoom factor.
+     */
     zoomOut : function(){ 
         this.setMagnification(this.getMagnification() / this.zoomFactor);
     },
 
+    /**
+     * Shorthand for setting the current magnification to 1.
+     */
     zoomReset : function(){ 
         this.setMagnification(1.0);
     },
 
     // ---------------
 
+    /**
+     * Loads and displays the image with the given id. Most of the
+     * work is drawing any regions already defined in panes.
+     */
     openImage : function(id){
 	var s = this.grid.getStore();
 	var t2r,tag,r, px, p0, p1;
@@ -576,14 +657,13 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	}
     },
 
-    imageLoaded : function(){
-	this.image.setSize( this.osi.width, this.osi.height );
-	this.lmask.hide();
-	this.focus();
-    },
-
     // ---------------
 
+    /**
+     * For a given region, returns a tag that (a) is human readable and (b) uniquely
+     * identifies the region. Our rule is that no two regions may have identical
+     * geometries. So the tag simply reports the geometry.
+     */
     makeTag : function(r){
 	var s = r.actualGeom?r.actualGeom:r;
 	return 'x:' + Math.round(s.x) +
@@ -594,6 +674,9 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 
     // ---------------
 
+    /**
+     * Regenerates the labels displayed by regions, and the coordinates displayed by panes.
+     */
     syncLabels : function(){
 	var lbl; 
 	var r;
@@ -624,7 +707,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	this.syncLabels();
     },
 
-    /*
+    /**
      * Removes the association between the given pane and region.
      */
     dissociate : function(p, r){
@@ -635,15 +718,9 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	}
     },
 
-    stretchToFit : function(){
-	var m = this.magnification;
-	var s = this.getSize();
-	var ps = this.panel.getSize();
-	var dw = s.width - ps.width + 2;
-	var dh = s.height - ps.height + 2;
-	this.setSize(m*this.osi.width+dw, m*this.osi.height+dh);
-    },
-
+    /**
+     * Creates a new region from the given config object and adds it to the current image.
+     */
     addRegion : function(cfg){
 	if(cfg.width < this.minRegionWidth || cfg.height < this.minRegionHeight)
 	    return undefined;
@@ -657,6 +734,9 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	return r;
     },
 
+    /**
+     * Shorthand for adding a region that exactly covers the displayed image.
+     */
     createCoveringRegion : function(){
 	var cfg = {
 	    x:0,
@@ -668,16 +748,27 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	return this.addRegion(cfg);
     },
 
+    /** 
+     * Removes the given region and dissociates it from any panes.
+     */
     removeRegion : function(r){
 	this.currPanes.each( function(p){ this.dissociate(p,r); }, this);
 	this.panel.remove(r);
 	this.syncLabels();
     },
 
+    /**
+     * Removes each region in a list.
+     */
     removeRegions : function(selected){
 	Ext.each( this.getRegions(selected), this.removeRegion, this);
     },
 
+    /**
+     * Returns a list of regions. With no argument, returns all regions in the current
+     * image. With a boolean argument, returns regions that are (true) or are not (false) currently
+     * selected.
+     */
     getRegions : function(selected){
 	if(selected === undefined || selected === null)
 	    return this.findBy(function(x){return x instanceof PRISM.Region;})
@@ -685,43 +776,67 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	    return this.findBy(function(x){return x instanceof PRISM.Region && x.isSelected()===selected;})
     },
 
+    /**
+     * With no argument, selects all regions. With a boolean arg, sets the selection state
+     * of all regions to the specified value.
+     */
     selectAll : function(val){
 	Ext.each( this.getRegions(), function(){this.setSelected(val);} );
     },
 
+    /**
+     * Shorthand for selectAll(false)
+     */
     unselectAll : function(){
 	this.selectAll(false);
     },
 
+    /**
+     * Selects the specified region.
+     */
     select : function(r){
 	r.setSelected(true);
     },
 
+    /**
+     * Unselects the specified region.
+     */
     unselect : function(r){
 	r.setSelected(false);
     },
 
+    /**
+     * Toggles the selection state of every region.
+     */
     toggleAllRegions : function(){
 	Ext.each( this.getRegions(), function(){this.toggleSelected();} );
     },
     
+    /**
+     * Makes all regions invisible or visible (by add/removing css class "prism-hideregions").
+     * With no argument, hides all regions. With a boolean arg, sets the hidden state of
+     * all regions to that value.
+     */
     hideRegions : function(hide){
 	hide = (hide===undefined?true:hide);
 	this.panel.el[hide?'addClass':'removeClass']('prism-hideregions');
     },
 
+    /**
+     * Splits regions along a horizontal or vertical line passing through point.
+     * Point is an (x,y) pair in pixels.
+     * Orientation is either 'h' (horizontal) or 'v' (vertical).
+     * If selected is undefined, splits all regions intersected by the line. If it
+     * is a boolean, then split is limited to selected (true) or unselected (false) regions.
+     */
     splitRegions : function( point, orientation, selected ){
 	Ext.each(this.getRegions(selected), function(r){ r.split(point,orientation); });
     },
     
-    reportRegions : function(selected){
-	Ext.each(this.getRegions(selected), function(r){
-	    console.log(Ext.encode(r.getActualGeometry()));
-	    }, this);
-    },
-
     /**
-     * if altKey:
+     * Handler for mouse clicks.
+     *
+     * If altKey:
      *  click		splits selected regions on vertical line through event xy
      *  shift-click	splits selected regions on horizontal line through event xy
      * else:
@@ -765,8 +880,19 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	}
     },
 
-    focus : function(){ this.focusEl.focus(); },
+    /**
+     * Gives focus to the editor's focus element. (In order to catch key events
+     * in all browsers (Firefox, you know who you are), there has to be a focussable
+     * element that actually has focus.)
+     */
+    focus : function(){ 
+	this.focusEl.focus(); 
+    },
 
+    /**
+     * Returns a toolbar config for creating the top toolbar of the app.
+     * Split out for readability's sake.
+     */
     makeMainToolbar : function(){
 	return { 
 	    enableOverflow: true,
@@ -819,13 +945,6 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 		handler : function(){ this.zoomIn(); this.focus(); },
 		scope : this
 		},'-',{
-		/*
-		text : 'Fit',
-		tooltip : 'Stretch or shrink the window to fit the image.',
-		handler : this.stretchToFit,
-		scope : this
-		},'-',{
-		*/
 		text : 'ClickAssign',
 		tooltip : 'Associates panes to regions you click.',
 		ref : 'clickAssignButton',
@@ -893,6 +1012,10 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	        }]
 	    };
     },
+
+    /**
+     * Open (create in necessary) the help doc window.
+     */
     showHelp : function(){
 	if(!this.helpWindow){
 	    this.helpWindow = new Ext.Window({
@@ -914,7 +1037,14 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	}
 	this.helpWindow.show();
     },
+
+
+    /**
+     * Initialize drag and drop behaviors.
+     */
     initDragDrop : function(){
+	// The drop zone responds to dropping a pane label on a region
+	// i.e., it creates the association between them.
 	this.dropZone = new Ext.dd.DropZone(this.panel.body, {
 	    ddGroup : this.grid.getView().dragZone.ddGroup,
 	    editor : this,
@@ -943,6 +1073,9 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 		return true;
 		}
 	    });
+
+	// The drag zone responds to all other mouse events in the image area:
+	// clicks, drags, etc.
 	this.dragZone = new Ext.dd.DragZone(w.panel.el, {
 	    editor : this,
 	    proxy : new Ext.dd.StatusProxy({ shadow:false, animRepair : false }),
@@ -996,13 +1129,16 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 		},
 	    onMouseUp : function(e){
 		if(! this.dragData.didDrag){
+		    // just a click...delegate to clicked() handler.
 		    var rel = e.getTarget('.prism-region',1,true);
 		    var r = rel ? Ext.getCmp(rel.id) : undefined;
 		    this.editor.clicked(e,r);
 		}
 		else {
+		    // what a drag... :-)
 		    var ed = this.dragData.ed;
 		    if(this.dragData.mode=="draw"){
+			// user drew a new region.
 			var el = this.proxy.el;
 			var exy = this.currXY;
 			var pxy = this.editor.panel.el.getXY();
