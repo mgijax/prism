@@ -1,14 +1,19 @@
 <div class="hlp-entry">
-  <div class="hlp-hdr">Load a new J#.</div>
+  <div class="hlp-hdr">Load a new J#:</div>
   <div class="hlp-txt">Enter the J# in the text field at the top left and hit Return
-  or tab out of the field. The first image for the J# is
-  opened automatically.
+  (or tab out of the field). The first image for the J# is opened automatically.
+  If the J# has no figures in the database (or cannot be found), an error message
+  appears. If a figure record exists, but has no associated image (JPEG file), a "No
+  image available" message appears.
   </div>
 </div>
 
 <div class="hlp-entry">
-  <div class="hlp-hdr">See a given image and its panes.</div>
-  <div class="hlp-txt">Click on the figure label in the table on the left
+  <div class="hlp-hdr">See a given figure and its panes:</div>
+  <div class="hlp-txt">Click on the figure label in the table on the left. The image for the figure
+  is displayed. If pane coordinates have already been defined, the corresponding overlays are also displayed.
+  If there is no corresponding image, "No image available" is displayed. (Eventually, will provide the 
+  ability to upload image files and associate them with figures.)
   </div>
 </div>
 
@@ -19,10 +24,11 @@
 </div>
 
 <div class="hlp-entry">
-   <div class="hlp-hdr">Split regions into two.</div>
+   <div class="hlp-hdr">Split regions into two:</div>
    <div class="hlp-txt">Select the region(s) to split. Then Option-click (hold down the
-   Option key while clicking). All selected regions will be split
-   along a horizontal line though the clicked location. To split
+   Option (or Alt) key while clicking). All selected regions will be split
+   along a horizontal line though the clicked location. (Regions not intersected by the
+   hirizontal are unaffected.) To split
    along the vertical, also hold down the Shift key (Option-Shift-click).
    </div>
 </div>
@@ -30,19 +36,23 @@
 <div class="hlp-entry">
   <div class="hlp-hdr">Select region(s):</div>
   <div class="hlp-txt">Click on it. To select multiple regions, hold the shift key
-  down while clicking.
+  down while clicking. Also: If an image pane has coordinates, then clicking on the pane's row
+  in the table will select the region in the image. Also: clicking the button "SelectAll" will select
+  all regions.
   </div>
 </div>
 
 <div class="hlp-entry">
   <div class="hlp-hdr">Delete region(s):</div>
-  <div class="hlp-txt">Select the region(s) to delete and click the "Delete" button.
+  <div class="hlp-txt">Select the region(s) to delete and click the "Delete" button (or type the corresp.
+  keyboard shortcut). Panes that
+  were currently associated with the regions will be dis-associated (and display a "?" for coordinates).
   </div>
 </div>
 
 <div class="hlp-entry">
   <div class="hlp-hdr">Associate a pane with a region:</div>
-  <div class="hlp-txt">Drag the pane label from the table and drop onto the desired region.
+  <div class="hlp-txt">Option 1: Drag the pane label from the table and drop onto the desired region. Option 2: click "OnePane" to associate a single pane with the entire image area. Option 3: Click "ClickAssign" (note: the button stays depressed), and then click the regions in order. Panes will be assigned in order. You may click on a different panelabel (in the table) to start/continue from a different point. When you are done, click "ClickAssign" again, to reset the button. Option 4: Click "GridAssign". Autoassigns all panes in order to defined regions in a left-to-right, top-to-bottom order. Option 4 works better when you have defined regions by splitting rather than by drawing freehand.
   </div>
 </div>
 
@@ -65,9 +75,9 @@ Tip: on a fresh image (no regions yet) option-click or option-shift-click on the
   Note: "Option" may be "Alt" on your keyboard.
   <div class="hlp-txt">
     <table>
+    <tr><td>option-s</td><td>Save</td></tr>
     <tr><td>option-z</td><td>Undo</td></tr>
     <tr><td>option-r</td><td>Redo</td></tr>
-    <tr><td>option-s</td><td>Save</td></tr>
     <tr><td>DEL or BACKSPACE</td><td> Delete selected</td></tr>
     <tr><td>option-x</td><td> Delete selected</td></tr>
     <tr><td>option-shift-x</td><td>Clear (delete all)</td></tr>
@@ -82,7 +92,6 @@ Tip: on a fresh image (no regions yet) option-click or option-shift-click on the
     <tr><td>option-DOWN</td><td>Next figure</td></tr>
     -->
     </table>
-Tip: if the app does not respond to keys being pressed, try clicking one of the buttons in the toolbar, or clicking in the J# text field. (I'm trying to find a better fix.)
   </div>
 </div>
 
