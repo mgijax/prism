@@ -7,7 +7,10 @@ PRISM.init = function(cfg){
     });
 
     v = new Ext.Viewport({layout:'fit'});
-    w = new PRISM.Editor();
+    w = new PRISM.Editor({
+	    title : 'PRISM: PRoduction (nee PRototype) Image Submission Module [' + 
+		PRISM.config.MGD_DBSERVER + '.' + PRISM.config.MGD_DBNAME + ']'
+	    });
     v.add(w);
     w.show()
     w.openLogin()

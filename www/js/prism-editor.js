@@ -1,7 +1,6 @@
 Ext.namespace('PRISM');
 
 PRISM.Editor = Ext.extend(Ext.Window, {
-    title : 'PRISM: PRoduction (nee PRototype) Image Submission Module',
     x:10, 
     y:10, 
     width:800, height:600, 
@@ -105,6 +104,9 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	    key:Ext.EventObject.PAGE_UP, 
 	    alt : false,
 	    fn:function(){this.panel.body.scroll('u',this.panel.getHeight(),true);}
+	    },{
+	    // save
+	    key:'s', fn:function(){this.save();}
 	    },{
 	    // undo
 	    key:'z', fn:function(){this.undoStack.length>0&&this.undo();},
