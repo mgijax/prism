@@ -14,7 +14,7 @@ PRISM.init = function(cfg){
     v.add(w);
     w.show()
     w.openLogin()
-    w.setJnum('J:58080')
+    w.setJnum('J:47700')
     // other good examples: J:58080, J:172713, J:168626, J:102528, 
     // J:93300, J:30342, J:47700, J:64590, J:42707, J:12604
 }
