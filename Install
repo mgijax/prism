@@ -50,6 +50,7 @@ Ext.namespace('PRISM');
 PRISM.config = {
     IMAGEPANE_URL : "${IMAGEPANE_URL}",
     PIXELDB_URL : "${PIXELDB_URL}",
+    JFILE_URL : "${JFILE_URL}",
     HELP_URL : "${HELP_URL}",
     MGD_DBSERVER : "${MGD_DBSERVER}",
     MGD_DBNAME : "${MGD_DBNAME}"

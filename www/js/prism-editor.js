@@ -326,6 +326,13 @@ PRISM.Editor = Ext.extend(Ext.Window, {
     },
 
     // ---------------
+    showPdf: function(){
+	var j = parseInt(this.jnum.match(/\d+/)[0]),
+	    m = j - j%500,
+	    u = PRISM.config.JFILE_URL + m + "/J" + j + ".pdf";
+	open(u);
+    },
+
     /**
      * Opens a window that allows user to specify user name and password for
      * database logins.
@@ -556,8 +563,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
     jnumHandler : function(jnum){
 	jnum = "" + ((typeof(jnum) === "object") ? jnum.getValue() : jnum);
 	jnum = (jnum.indexOf("J:") === 0 ? jnum : "J:"+jnum);
-	if(this.jnum !== jnum) 
-	    this.saveBeforeAction(this.setJnum, this, [jnum]);
+	this.saveBeforeAction(this.setJnum, this, [jnum]);
     },
 
     // ---------------
@@ -904,6 +910,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 		},'-',{
 		xtype : 'textfield',
 		tooltip : 'Enter a J# for a ref containing images.',
+		width : 80,
 		ref : 'jnumField',
 		name : 'imageId',
 		emptyText : 'Enter J:num (eg J:12604).',
@@ -917,6 +924,11 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 			},
 		    scope : this
 		    }
+		},'-',{
+		text : 'PDF',
+		tooltip : 'Show the PDF file for the current Jnumber.',
+		handler : this.showPdf,
+		scope : this
 		},'-',{
 		text : 'Save',
 		tooltip : 'Save your work.',
