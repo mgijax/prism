@@ -387,39 +387,55 @@ PRISM.Editor = Ext.extend(Ext.Window, {
     },
 
     // ---------------
-    /**
-     * Opens a window that allows user to upload image(s) for this Jnum.
-     * (Partion implementation - NOT functional!)
-     */
     openUpload : function(){
+	var fp;
 	if(!this.uploadWindow){
-	    var cfg = {
-		title : "Upload Image for Figure",
+	    fp = new Ext.form.FormPanel({
+		autoScroll : true,
+		padding : 6,
+		fileUpload : true,
+		//url : PRISM.config.PIXELDB_UPLOAD_URL,
+		url : PRISM.config.PIXELDB_FETCH_URL,
+		ref : 'formPanel',
+		items : [{
+		    xtype : 'hidden',
+		    name : 'image_submission_form',
+		    value : ''
+		    },{
+		    xtype : 'hidden',
+		    name : 'jnum',
+		    value : this.jnum.slice(2)
+		    }]
+		});
+	    this.imgStore.each(function(irec){
+		fp.add({
+		    xtype:'fileuploadfield', 
+		    name : 'imageKey_'+irec.get('_image_key'),
+		    fieldLabel:'Figure '+irec.get('figurelabel')});
+	    }, this);
+	    this.uploadWindow = new Ext.Window({
+		title : "Upload Images for Jnum",
 		closable : true,
 		closeAction : 'hide',
-		layout : 'form',
-		x:200, y:100, width:400, autoHeight : true,
-		items : [{ 
-		    fieldLabel : 'Image file',
-		    xtype : 'field',
-		    ref : 'fileField',
-		    autoCreate : {tag: 'input', type: 'file', size: '20', autocomplete: 'off'}
-		    }],
+		layout : 'fit',
+		x:100, y:50, width:330, height:250,
+		items : fp,
 		buttons : [{
-		    text : 'Upload',
+		    text : 'Cancel',
 		    handler : function(){
+			this.uploadWindow.formPanel.form.reset();
 			this.uploadWindow.hide();
 		        },
 		    scope : this
 		    },{
-		    text : 'Cancel',
+		    text : 'Upload',
 		    handler : function(){
+			this.uploadWindow.formPanel.form.submit();
 			this.uploadWindow.hide();
 		        },
 		    scope : this
 		    }]
-		};
-	    this.uploadWindow = new Ext.Window(cfg);
+		});
 	}
 	this.uploadWindow.show();
     },
@@ -526,9 +542,12 @@ PRISM.Editor = Ext.extend(Ext.Window, {
      * Sets the jnum; loads the new jnum's data and opens its first image (if any).
      */
     setJnum : function(jnum){
+	this.uploadWindow && this.uploadWindow.close();
+	this.uploadWindow = null;
 	this.clearUndo();
 	this.removeRegions();
 	this.jnum = jnum;
+	this.imageId = null;
 	this.getTopToolbar().jnumField.setRawValue(jnum);
 	this.grid.getStore().on('load', this.jnumLoaded, this, {single:true});
 	this.grid.store.load({ params : { jnum:this.jnum } });
@@ -544,6 +563,16 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	// suppress thumbnails for now...
 	s.clearFilter();
 	s.filterBy(function(r){ return r.get('type')!=="Thumbnail";});
+
+	// create store of distinct image records (the main store contains
+	// image pane data, which replicates image info for each pane).
+	this.imgStore = new Ext.data.Store();
+	s.each(function(r){
+	    var k = r.get('_image_key');
+	    if(this.imgStore.indexOfId(k)===-1){
+		this.imgStore.add(r.copy(k));
+	    }
+	}, this);
 
 	r = s.getAt(0);
 	if(r){
@@ -644,7 +673,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 		return;
 	    }
 	    this.panel.body.removeClass('prism-noimage');
-	    this.setUrl(PRISM.config.PIXELDB_URL+px);
+	    this.setUrl(PRISM.config.PIXELDB_FETCH_URL+px);
 	    t2r = {};
 	    this.currPanes.each(function(p){
 	        var c = p.get('coords'),
@@ -934,13 +963,12 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 		tooltip : 'Save your work.',
 		handler : function(){ this.save(); this.focus(); },
 		scope : this
-		/*
 		},'-',{
 		text : 'Upload',
 		tooltip : 'Upload an image file for this Figure.',
+		disabled : true,
 		handler : function(){ this.openUpload(); this.focus(); },
 		scope : this
-		*/
 		},'-',{
 		text : '-1',
 		tooltip : 'Zoom out.',

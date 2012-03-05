@@ -27,7 +27,7 @@ PRISM.Grid = Ext.extend( Ext.grid.GridPanel, {
 		    'type',
 		    '_imagepane_key',
 		    'panelabel',
-		    'coords'
+		    'coords',
 		    ],
 	        }),
 	    writer : new Ext.data.JsonWriter(),

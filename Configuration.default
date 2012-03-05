@@ -10,5 +10,7 @@ source ${MGICONFIG}/master.config.csh
 setenv EXT "ext-3.3.0"
 setenv IMAGEPANE_URL "../../server/imagePaneData.cgi"
 setenv HELP_URL "./help.html"
-setenv PIXELDB_URL "/pix/fetch_pixels.cgi?id="
+setenv PIXELDB_SERVER `echo $WEBSHARE_URL | sed 's/\(http:\/\/[^/]*\)\/.*/\1/'`
+setenv PIXELDB_FETCH_URL "${PIXELDB_SERVER}/pix/fetch_pixels.cgi?id="
+setenv PIXELDB_UPLOAD_URL "${PIXELDB_SERVER}/pix/private/submitprocess.cgi"
 setenv JFILE_URL "/usrlocalmgi/jfilescanner/current/Jfiles/"

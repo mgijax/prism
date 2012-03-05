@@ -73,3 +73,23 @@ body {
 .hlp-entry td {
     font-size : 10pt;
 }
+
+.prism-upload-file {
+    height : 15px;
+}
+
+.prism-upload-fname {
+    display : inline;
+}
+
+.prism-upload-finput {
+    display : block;
+}
+
+.x-list-over .prism-upload-fname {
+    display : none;
+}
+
+.x-list-over .prism-upload-finput {
+    display : block;
+}
