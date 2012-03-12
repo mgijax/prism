@@ -13,6 +13,10 @@ gunzip -c ${EXT}.tar.gz | tar xvf -
 ln -s ${EXT} ext
 cd ../..
 
+#
+# Copy index.html to top level dir.
+cp -f ./www/html/index.html .
+
 # Create prismConfig.py, containing copies of env vars
 # needed by server.
 #

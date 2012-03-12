@@ -8,7 +8,7 @@ endif
 source ${MGICONFIG}/master.config.csh
 
 setenv EXT "ext-3.3.0"
-setenv IMAGEPANE_URL "../../server/imagePaneData.cgi"
+setenv IMAGEPANE_URL "./server/imagePaneData.cgi"
 setenv HELP_URL "./help.html"
 setenv PIXELDB_SERVER `echo $WEBSHARE_URL | sed 's/\(http:\/\/[^/]*\)\/.*/\1/'`
 setenv PIXELDB_FETCH_URL "${PIXELDB_SERVER}/pix/fetch_pixels.cgi?id="
