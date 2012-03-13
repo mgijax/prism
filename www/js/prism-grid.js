@@ -5,7 +5,7 @@ PRISM.Grid = Ext.extend( Ext.grid.GridPanel, {
     initComponent : function(){
 	this.store = new Ext.data.GroupingStore({
 	    sortInfo : { field : 'panelabel', direction:'ASC' },
-	    groupField : '_image_key',
+	    groupField : 'labelWithId',
 
 	    url : PRISM.config.IMAGEPANE_URL,
 
@@ -23,6 +23,7 @@ PRISM.Grid = Ext.extend( Ext.grid.GridPanel, {
 		    '_image_key',
 		    'pixid',
 		    'figurelabel',
+		    'labelWithId',
 		    'class',
 		    'type',
 		    '_imagepane_key',
@@ -54,6 +55,7 @@ PRISM.Grid = Ext.extend( Ext.grid.GridPanel, {
 		{header: 'Type', dataIndex: 'type', hidden:true},
 		{header: 'PixId', dataIndex: 'pixid', hidden:true },
 		{header: 'Figure Label', dataIndex: 'figurelabel',width:120,hidden:true},
+		{header: 'Figure Label w/ Id', dataIndex: 'labelWithId',width:120,hidden:true},
 		{header: 'X', dataIndex: 'x', hidden:true},
 		{header: 'Y', dataIndex: 'y', hidden:true},
 		{header: 'Width', dataIndex: 'width', hidden:true},

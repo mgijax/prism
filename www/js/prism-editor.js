@@ -56,7 +56,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	    };
 	this.on('afterrender', function(){ 
 	    this.grid.store.on('save', this.afterSave, this);
-	    this.grid.on('groupclick', function(g,f,v,e){ this.openImage(v); }, this);
+	    this.grid.on('groupclick', this.groupClicked, this);
 	    this.grid.getSelectionModel().on('selectionchange',function(sm){
 		this.unselectAll();
 		Ext.each(sm.getSelections(), function(p){
@@ -86,6 +86,13 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	this.undoStack = [];
 	this.redoStack = [];
 
+    },
+
+    groupClicked : function(g,f,v,e){ 
+	// the group value is a concat of the fig label and the image key. Split off the
+	// key and pass it.
+	var key = parseInt(v.match(/\d+$/)[0])
+	this.openImage(key); 
     },
 
     /**
@@ -652,15 +659,15 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	this.grid.getSelectionModel().clearSelections();
 	this.getTopToolbar().clickAssignButton.toggle(false);
 	//
-	this.currPanes = s.query(s.groupField, new RegExp('^'+id+'$'));
+	this.currPanes = s.query("_image_key", id);
 	p0 = this.currPanes.get(0);
 	p1 = this.currPanes.get(this.currPanes.getCount()-1);
 	this.currPanesRange = [ s.indexOf(p0), s.indexOf(p1) ];
 	//
 	var gv = this.grid.getView();
-	var gid = gv.getGroupId(id);
 	gv.collapseAllGroups();
-	gv.toggleGroup(gid, true)
+	gv.toggleRowIndex(this.currPanesRange[0], true)
+	//
 	if(this.imageId !== id){
 	    this.imageId = id;
 	    this.clearUndo();
