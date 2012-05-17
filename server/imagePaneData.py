@@ -1,5 +1,9 @@
 #!/opt/local/bin/python
 #
+# imagePaneData.py
+#
+# CGI script implementing server side functions for PRISM image tool.
+#
 
 import os
 import sys
@@ -26,6 +30,25 @@ PIXELDB_LDBKEY = 19
 class Handler:
     def __init__(self):
 	self.go()
+
+    def go(self):
+	opts = cgi.FieldStorage()
+	if opts.has_key('user'):
+	    db.set_sqlUser(opts['user'].value)
+	if opts.has_key('password'):
+	    db.set_sqlPassword(opts['password'].value)
+	if opts.has_key('jnum'):
+	    jnum = opts['jnum'].value
+	    self.retrieve(jnum)
+	    return
+	elif opts.has_key('xaction'):
+	    xaction = opts['xaction'].value
+	    if xaction == 'update':
+		updates = opts['images'].value
+		updates = json.loads(updates)
+		self.update(updates)
+		return
+	raise RuntimeError("No action.")
 
     def getImagePanes(self,jnum):
 	query = '''
@@ -61,7 +84,7 @@ class Handler:
 	    AND p._image_key = i._image_key
 	    AND i._image_key *= px._object_key
 	    AND px._logicaldb_key = %d
-	    ORDER BY i.figurelabel, p.panelabel
+	    ORDER BY i.figurelabel, i._image_key, p.panelabel
 	    ''' % (jnum, PIXELDB_LDBKEY)
 	res = []
 	for r in db.sql(query,'auto'):
@@ -74,6 +97,7 @@ class Handler:
 		    'width' : r['width'],
 		    'height' : r['height']
 		    }
+	    r['labelWithId'] = "%s %s" % (str(r['figurelabel']),str(r['_image_key']))
 	    res.append(r)
 	return res
         
@@ -122,25 +146,6 @@ class Handler:
 	    self.printResult(False, db.sql_server_msg )
 	else:
 	    self.printResult(True, r)
-
-    def go(self):
-	opts = cgi.FieldStorage()
-	if opts.has_key('user'):
-	    db.set_sqlUser(opts['user'].value)
-	if opts.has_key('password'):
-	    db.set_sqlPassword(opts['password'].value)
-	if opts.has_key('jnum'):
-	    jnum = opts['jnum'].value
-	    self.retrieve(jnum)
-	    return
-	elif opts.has_key('xaction'):
-	    xaction = opts['xaction'].value
-	    if xaction == 'update':
-		updates = opts['images'].value
-		updates = json.loads(updates)
-		self.update(updates)
-		return
-	raise RuntimeError("No action.")
 
 def jsonpCgiHandler(obj, callback="callback", isEncoded=False):
     scriptTag=False

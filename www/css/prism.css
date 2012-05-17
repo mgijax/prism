@@ -19,7 +19,7 @@ body {
 .prism-region.selected {
     background : blue;
     border : thin solid white;
-    opacity : 0.7;
+    opacity : 0.4;
 }
 
 .prism-region-label {

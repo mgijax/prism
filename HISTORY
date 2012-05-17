@@ -1,3 +1,8 @@
+TAG: prism-4-0-0-2
+DATE: May 17, 2012
+STAFF: jer
+CHANGES: Merged branch tr11004 (bugfixes and minor tweaks). See TR11004.
+
 TAG: prism-tr11004-BP
 DATE: March 12, 2012
 STAFF: jer
@@ -5,6 +10,6 @@ CHANGES:
 1) Branch point tag for TR11004.
 
 TAG: prism-4-0-0-1
-DATE: 03-05-2012
+DATE: March 05, 2012
 STAFF: jer
 CHANGES: TR10978. Initial tag.

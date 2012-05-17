@@ -56,7 +56,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	    };
 	this.on('afterrender', function(){ 
 	    this.grid.store.on('save', this.afterSave, this);
-	    this.grid.on('groupclick', function(g,f,v,e){ this.openImage(v); }, this);
+	    this.grid.on('groupclick', this.groupClicked, this);
 	    this.grid.getSelectionModel().on('selectionchange',function(sm){
 		this.unselectAll();
 		Ext.each(sm.getSelections(), function(p){
@@ -86,6 +86,13 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	this.undoStack = [];
 	this.redoStack = [];
 
+    },
+
+    groupClicked : function(g,f,v,e){ 
+	// the group value is a concat of the fig label and the image key. Split off the
+	// key and pass it.
+	var key = parseInt(v.match(/\d+$/)[0])
+	this.openImage(key); 
     },
 
     /**
@@ -343,6 +350,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	if(!lw){
 	    var cfg = {
 		title : "Login",
+		modal : true,
 		closable : true,
 		closeAction : 'hide',
 		layout : 'form',
@@ -394,27 +402,42 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 		autoScroll : true,
 		padding : 6,
 		fileUpload : true,
-		//url : PRISM.config.PIXELDB_UPLOAD_URL,
-		url : PRISM.config.PIXELDB_FETCH_URL,
+		url : PRISM.config.PIXELDB_UPLOAD_URL,
 		ref : 'formPanel',
+		submitEmptyText : false,
 		items : [{
 		    xtype : 'hidden',
-		    name : 'image_submission_form',
-		    value : ''
+		    name : 'image_submission_form'
 		    },{
 		    xtype : 'hidden',
 		    name : 'jnum',
 		    value : this.jnum.slice(2)
+		    },{
+		    xtype : 'hidden',
+		    name : 'userID'
+		    },{
+		    xtype : 'hidden',
+		    name : 'pwd'
 		    }]
 		});
 	    this.imgStore.each(function(irec){
+		var _key=irec.get('_image_key'),
+		    pixid=irec.get('pixid');
 		fp.add({
 		    xtype:'fileuploadfield', 
-		    name : 'imageKey_'+irec.get('_image_key'),
-		    fieldLabel:'Figure '+irec.get('figurelabel')});
+		    name : 'imageKey_'+_key,
+		    fieldLabel:'Figure '+irec.get('figurelabel'),
+		    disabled : pixid ? true : false,
+		    value : pixid && ('Current pix id: ' + pixid) || 'Select file...',
+		    listeners : {
+			fileselected : function(f,v){
+			    f.setRawValue(v.split(/[:\\\/]/).slice(-1)[0]);
+			} }
+		    });
 	    }, this);
 	    this.uploadWindow = new Ext.Window({
-		title : "Upload Images for Jnum",
+		title : "Upload Images for Jnum " + this.jnum,
+		modal : true,
 		closable : true,
 		closeAction : 'hide',
 		layout : 'fit',
@@ -430,13 +453,28 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 		    },{
 		    text : 'Upload',
 		    handler : function(){
-			this.uploadWindow.formPanel.form.submit();
-			this.uploadWindow.hide();
+			var uw = this.uploadWindow, 
+			    f=uw.formPanel.form,
+			    lw = this.loginWindow,
+			    u = lw.user.getValue(),
+			    p = lw.password.getValue();
+			f.findField('userID').setValue(u);
+			f.findField('pwd').setValue(p);
+			f.items.each(function(inp){
+			    if(inp.xtype==='fileuploadfield')
+				inp.setDisabled(inp.fileInput.dom.value === "");
+			    }, this);
+			f.submit();
+			uw.hide();
 		        },
 		    scope : this
 		    }]
 		});
 	}
+
+	this.uploadWindow.formPanel.form.items.each(function(inp){
+	    inp.setDisabled(inp.initialConfig.disabled);
+	    });
 	this.uploadWindow.show();
     },
 
@@ -580,7 +618,8 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	    this.openImage(id);
 	}
 	else {
-	    this.image.el.dom.src = "";
+	    this.showNoImage();
+	    this.lmask.hide(); // not consistently done by store in this case, so we'll make sure...
 	    Ext.Msg.alert("Jnum not found, or has no Figures.");
 	}
 	s.commitChanges();
@@ -643,24 +682,27 @@ PRISM.Editor = Ext.extend(Ext.Window, {
     // ---------------
 
     /**
-     * Loads and displays the image with the given id. Most of the
+     * Loads and displays the image associated with the given image
+     * stub (_image_key).
+     *
+     * Most of the
      * work is drawing any regions already defined in panes.
      */
-    openImage : function(id){
+    openImage : function(id){ // "id" actually means _image_key (FIXME)
 	var s = this.grid.getStore();
 	var t2r,tag,r, px, p0, p1;
 	this.grid.getSelectionModel().clearSelections();
 	this.getTopToolbar().clickAssignButton.toggle(false);
 	//
-	this.currPanes = s.query(s.groupField, new RegExp('^'+id+'$'));
+	this.currPanes = s.query("_image_key", id);
 	p0 = this.currPanes.get(0);
 	p1 = this.currPanes.get(this.currPanes.getCount()-1);
 	this.currPanesRange = [ s.indexOf(p0), s.indexOf(p1) ];
 	//
 	var gv = this.grid.getView();
-	var gid = gv.getGroupId(id);
 	gv.collapseAllGroups();
-	gv.toggleGroup(gid, true)
+	gv.toggleRowIndex(this.currPanesRange[0], true)
+	//
 	if(this.imageId !== id){
 	    this.imageId = id;
 	    this.clearUndo();
@@ -668,8 +710,8 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	    this.setMagnification(1);
 	    px = this.currPanes.get(0).get('pixid');
 	    if(!px){
-		this.setUrl(Ext.BLANK_IMAGE_URL);
-		this.panel.body.addClass('prism-noimage');
+		this.showNoImage();
+		this.lmask.hide();
 		return;
 	    }
 	    this.panel.body.removeClass('prism-noimage');
@@ -690,6 +732,11 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	        }
 	    }, this);
 	}
+    },
+
+    showNoImage : function(){
+	this.setUrl(Ext.BLANK_IMAGE_URL);
+	this.panel.body.addClass('prism-noimage');
     },
 
     // ---------------
@@ -949,10 +996,18 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 		    specialkey : function(f,e){
 			var k = e.getKey();
 		        if(k===e.ENTER || k===e.TAB)
-			    this.jnumHandler(f);
+			    // Do NOT call jnum handler here. Why? Because change event will
+			    // fire later, which will call it again. Instead, just pass focus
+			    // away (to internal focus elt), which will trigger the change event.
+			    this.focus();
 			},
 		    scope : this
 		    }
+		},{
+		text : 'Reload',
+		tooltip : 'Reload the current Jnum.',
+		handler : function(){this.jnumHandler(this.jnum);},
+		scope : this
 		},'-',{
 		text : 'PDF',
 		tooltip : 'Show the PDF file for the current Jnumber.',
@@ -960,13 +1015,13 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 		scope : this
 		},'-',{
 		text : 'Save',
-		tooltip : 'Save your work.',
+		tooltip : 'Save image pane changes.',
 		handler : function(){ this.save(); this.focus(); },
 		scope : this
 		},'-',{
 		text : 'Upload',
-		tooltip : 'Upload an image file for this Figure.',
 		disabled : true,
+		tooltip : 'Upload image files for this Jnum.',
 		handler : function(){ this.openUpload(); this.focus(); },
 		scope : this
 		},'-',{
