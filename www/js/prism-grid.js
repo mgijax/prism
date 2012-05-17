@@ -1,7 +1,7 @@
 Ext.namespace("PRISM");
 
 PRISM.Grid = Ext.extend( Ext.grid.GridPanel, {
-    title: 'Images for this J: number',
+    title: 'Figures for this J: number',
     initComponent : function(){
 	this.store = new Ext.data.GroupingStore({
 	    sortInfo : { field : 'panelabel', direction:'ASC' },
@@ -42,7 +42,8 @@ PRISM.Grid = Ext.extend( Ext.grid.GridPanel, {
 		groupable : false,
 	    },
 	    columns: [
-		{header: 'Pane Label', dataIndex: 'panelabel' },
+		// need to encode labels for output (they can include "<" and other chars.
+		{header: 'Pane Label', dataIndex: 'panelabel', renderer : Ext.util.Format.htmlEncode},
 		{header: 'Pane', dataIndex: '_imagepane_key' , hidden:true},
 		{header: 'Coordinates', dataIndex : 'coords',
 		    renderer:{
@@ -54,7 +55,7 @@ PRISM.Grid = Ext.extend( Ext.grid.GridPanel, {
 		{header: 'Class', dataIndex: 'class', hidden:true},
 		{header: 'Type', dataIndex: 'type', hidden:true},
 		{header: 'PixId', dataIndex: 'pixid', hidden:true },
-		{header: 'Figure Label', dataIndex: 'figurelabel',width:120,hidden:true},
+		{header: 'Figure Label', dataIndex: 'figurelabel',width:120,hidden:true, renderer:Ext.util.Format.htmlEncode},
 		{header: 'Figure Label w/ Id', dataIndex: 'labelWithId',width:120,hidden:true},
 		{header: 'X', dataIndex: 'x', hidden:true},
 		{header: 'Y', dataIndex: 'y', hidden:true},
