@@ -694,7 +694,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	this.grid.getSelectionModel().clearSelections();
 	this.getTopToolbar().clickAssignButton.toggle(false);
 	//
-	this.currPanes = s.query("_image_key", id);
+	this.currPanes = s.query("_image_key", new RegExp("^"+id+"$"));
 	p0 = this.currPanes.get(0);
 	p1 = this.currPanes.get(this.currPanes.getCount()-1);
 	this.currPanesRange = [ s.indexOf(p0), s.indexOf(p1) ];

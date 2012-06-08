@@ -1,3 +1,8 @@
+TAG: prism-4-0-0-3
+DATE: June 8, 2012
+STAFF: jer
+CHANGES: Bugfix: oddball cases displaying thumbs instead of fullsize, also cannot expand group section.
+
 TAG: prism-4-0-0-2
 DATE: May 17, 2012
 STAFF: jer
