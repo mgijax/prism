@@ -771,7 +771,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	this.currPanes.each( function(p){
 	    var r = p.region;
 	    if(r){
-	        r.setLabel( r.getLabel() + p.get('panelabel') + '; ' );
+	        r.setLabel( r.getLabel() + Ext.util.Format.htmlEncode(p.get('panelabel')) + '; ' );
 		p.set('coords', r.getActualGeometry());
 	    }
 	}, this);
