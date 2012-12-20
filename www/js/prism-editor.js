@@ -804,8 +804,6 @@ PRISM.Editor = Ext.extend(Ext.Window, {
      * Creates a new region from the given config object and adds it to the current image.
      */
     addRegion : function(cfg){
-	if(cfg.width < this.minRegionWidth || cfg.height < this.minRegionHeight)
-	    return undefined;
 	cfg.editor=this;
 	var r = new PRISM.Region(cfg);
 	var n = this.getRegions().length;
