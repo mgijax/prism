@@ -52,27 +52,26 @@ class Handler:
 
     def getImagePanes(self,jnum):
 	query = '''
-	    SELECT 
-		px.numericpart AS "pixid",
+	SELECT 
+		px.numericpart AS pixid,
 	        i._image_key, 
 		i.figurelabel, 
-		c.term AS "class", 
-		t.term AS "type",
+		c.term AS class, 
+		t.term AS type,
 		p._imagepane_key,
 		p.panelabel,
 		p.x,
 		p.y,
 		p.width,
 		p.height
-	    FROM 
+	FROM 
+		IMG_Image i left outer join ACC_Accession px on i._image_key = px._object_key, 
 		BIB_Refs r, 
 	        ACC_Accession a, 
-		IMG_Image i, 
 		IMG_ImagePane p,
 		VOC_Term c, 
-		VOC_Term t,
-		ACC_Accession px
-	    WHERE a.accid = '%s'
+		VOC_Term t	
+	WHERE a.accid = '%s'
 	    AND a._object_key = r._refs_key
 	    AND a._logicaldb_key = 1
 	    AND a._mgitype_key = 1
@@ -82,9 +81,10 @@ class Handler:
 	    AND i._imageclass_key = c._term_key
 	    AND i._imagetype_key  = t._term_key
 	    AND p._image_key = i._image_key
-	    AND i._image_key *= px._object_key
+	    AND i._image_key = px._object_key
 	    AND px._logicaldb_key = %d
 	    ORDER BY i.figurelabel, i._image_key, p.panelabel
+
 	    ''' % (jnum, PIXELDB_LDBKEY)
 	res = []
 	for r in db.sql(query,'auto'):
