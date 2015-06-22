@@ -15,8 +15,9 @@ import logging
 import prismConfig
 sys.path.append( prismConfig.MGI_PYTHONLIB )
 import db
-db.set_sqlServer(prismConfig.MGD_DBSERVER)
-db.set_sqlDatabase(prismConfig.MGD_DBNAME)
+db.set_sqlServer(prismConfig.PG_DBSERVER)
+db.set_sqlDatabase(prismConfig.PG_DBNAME)
+
 db.set_sqlUser(prismConfig.MGI_PUBLICUSER)
 db.set_sqlPassword(prismConfig.MGI_PUBLICPASSWORD)
 
@@ -54,7 +55,7 @@ class Handler:
 	query = '''
 	SELECT 
 		px.numericpart AS pixid,
-	        i._image_key, 
+		i._image_key, 
 		i.figurelabel, 
 		c.term AS class, 
 		t.term AS type,
@@ -67,38 +68,51 @@ class Handler:
 	FROM 
 		IMG_Image i left outer join ACC_Accession px on i._image_key = px._object_key, 
 		BIB_Refs r, 
-	        ACC_Accession a, 
+		ACC_Accession a, 
 		IMG_ImagePane p,
 		VOC_Term c, 
 		VOC_Term t	
 	WHERE a.accid = '%s'
-	    AND a._object_key = r._refs_key
-	    AND a._logicaldb_key = 1
-	    AND a._mgitype_key = 1
-	    AND a.preferred = 1
-	    AND a.private = 0
-	    AND r._refs_key = i._refs_key
-	    AND i._imageclass_key = c._term_key
-	    AND i._imagetype_key  = t._term_key
-	    AND p._image_key = i._image_key
-	    AND i._image_key = px._object_key
-	    AND px._logicaldb_key = %d
-	    ORDER BY i.figurelabel, i._image_key, p.panelabel
+		AND a._object_key = r._refs_key
+		AND a._logicaldb_key = 1
+		AND a._mgitype_key = 1
+		AND a.preferred = 1
+		AND a.private = 0
+		AND r._refs_key = i._refs_key
+		AND i._imageclass_key = c._term_key
+		AND i._imagetype_key  = t._term_key
+		AND p._image_key = i._image_key
+		AND i._image_key = px._object_key
+		AND px._logicaldb_key = %d
+		ORDER BY i.figurelabel, i._image_key, p.panelabel
 
-	    ''' % (jnum, PIXELDB_LDBKEY)
+		''' % (jnum, PIXELDB_LDBKEY)
 	res = []
 	for r in db.sql(query,'auto'):
-	    if r['x'] is None:
-		r['coords'] = None
-	    else:
-		r['coords'] = {
-		    'x' : r['x'],
-		    'y' : r['y'],
-		    'width' : r['width'],
-		    'height' : r['height']
-		    }
-	    r['labelWithId'] = "%s %s" % (str(r['figurelabel']),str(r['_image_key']))
-	    res.append(r)
+		imageInfo = {}
+		if r['x'] is None:
+			imageInfo['coords'] = None
+		else:
+			imageInfo['coords'] = {
+			'x' : r['x'],
+			'y' : r['y'],
+			'width' : r['width'],
+			'height' : r['height']
+			}
+		imageInfo['labelWithId'] = "%s %s" % (str(r['figurelabel']),str(r['_image_key']))
+		imageInfo['_image_key'] = r['_image_key']
+		imageInfo['_imagepane_key'] = r['_imagepane_key']
+		imageInfo['pixid'] = r['pixid']
+		imageInfo['x'] = r['x']
+		imageInfo['y'] = r['y']
+		imageInfo['height'] = r['height']
+		imageInfo['width'] = r['width']
+		imageInfo['figurelabel'] = "%s" % (str(r['figurelabel']))
+		imageInfo['panelabel'] = "%s" % (str(r['panelabel']))
+		imageInfo['class'] = "%s" % (str(r['class']))
+		imageInfo['type'] = "%s" % (str(r['type']))
+		res.append(imageInfo)
+
 	return res
         
     def printResult(self, success, value):
