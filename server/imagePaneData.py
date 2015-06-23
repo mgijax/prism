@@ -18,8 +18,8 @@ import db
 db.set_sqlServer(prismConfig.PG_DBSERVER)
 db.set_sqlDatabase(prismConfig.PG_DBNAME)
 
-db.set_sqlUser(prismConfig.MGI_PUBLICUSER)
-db.set_sqlPassword(prismConfig.MGI_PUBLICPASSWORD)
+db.set_sqlUser('mgd_dbo')
+db.set_sqlPasswordFromFile(prismConfig.MGD_DBPASSWORDFILE)
 
 try:
     import json
@@ -34,10 +34,10 @@ class Handler:
 
     def go(self):
 	opts = cgi.FieldStorage()
-	if opts.has_key('user'):
-	    db.set_sqlUser(opts['user'].value)
-	if opts.has_key('password'):
-	    db.set_sqlPassword(opts['password'].value)
+	#if opts.has_key('user'):
+	#    db.set_sqlUser(opts['user'].value)
+	#if opts.has_key('password'):
+	#    db.set_sqlPassword(opts['password'].value)
 	if opts.has_key('jnum'):
 	    jnum = opts['jnum'].value
 	    self.retrieve(jnum)
