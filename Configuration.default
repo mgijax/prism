@@ -7,21 +7,17 @@ if ( ${?MGICONFIG} == 0 ) then
 endif
 source ${MGICONFIG}/master.config.csh
 
-#setenv MGD_DBSERVER "DEV1_MGI"
-#setenv MGD_DBNAME "mgd_test"
-
 setenv EXT "ext-3.3.0"
 setenv IMAGEPANE_URL "./server/imagePaneData.cgi"
 setenv HELP_URL "./www/html/help.html"
-#setenv PIXELDB_SERVER `echo $WEBSHARE_URL | sed 's/\(http:\/\/[^/]*\)\/.*/\1/'`
 
 if ( ${INSTALL_TYPE} == "dev" ) then
     setenv PIXELDB_SERVER "http://bheidev01"
-    setenv PIXELDB_PATH "/usrlocalmgi/test/pixeldb/www"
 else
     setenv PIXELDB_SERVER "http://bhmgiei01"
-    setenv PIXELDB_PATH "/usrlocalmgi/live/pixeldb/www"
 endif
+
+setenv PIXELDB_PATH "/usrlocalmgi/live/pixeldb/www"
 
 setenv PIXELDB_FETCH_URL "${PIXELDB_SERVER}${PIXELDB_PATH}/fetch_pixels.cgi?id="
 setenv PIXELDB_UPLOAD_URL "${PIXELDB_SERVER}${PIXELDB_PATH}/private/submitprocess.cgi"
