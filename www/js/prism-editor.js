@@ -1,9 +1,9 @@
 Ext.namespace('PRISM');
 
 PRISM.Editor = Ext.extend(Ext.Window, {
-    x:10, 
-    y:10, 
-    width:800, height:600, 
+    x:10,
+    y:10,
+    width:800, height:600,
     closable:false,
     maximizable : false,
     maximized : true,
@@ -35,7 +35,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	    ref : 'panel',
 	    autoScroll : true,
 	    items:{
-		xtype:'box', 
+		xtype:'box',
 		ref : '../image',
 		x : 0,
 		y : 0,
@@ -54,7 +54,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	this.osi.onload = function(){
 	    me.imageLoaded();
 	    };
-	this.on('afterrender', function(){ 
+	this.on('afterrender', function(){
 	    this.grid.store.on('save', this.afterSave, this);
 	    this.grid.on('groupclick', this.groupClicked, this);
 	    this.grid.getSelectionModel().on('selectionchange',function(sm){
@@ -77,7 +77,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	    // back to the editor. (If buttons keep focus, then hitting the spacebar
 	    // is the same as clicking the button. This is an accessibility feature
 	    // that we are turning off here. Should make this an option instead.
-	    Ext.each(this.getTopToolbar().findByType('button'), function(b){ 
+	    Ext.each(this.getTopToolbar().findByType('button'), function(b){
 	        b.on('click', this.focus, this);
 		}, this);
 
@@ -88,11 +88,11 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 
     },
 
-    groupClicked : function(g,f,v,e){ 
+    groupClicked : function(g,f,v,e){
 	// the group value is a concat of the fig label and the image key. Split off the
 	// key and pass it.
 	var key = parseInt(v.match(/\d+$/)[0])
-	this.openImage(key); 
+	this.openImage(key);
     },
 
     /**
@@ -110,12 +110,12 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	    },
 	this.keyConfigs = [{
 	    // page down
-	    key:Ext.EventObject.PAGE_DOWN, 
+	    key:Ext.EventObject.PAGE_DOWN,
 	    alt : false,
 	    fn:function(){this.panel.body.scroll('d',this.panel.getHeight(),true);}
 	    },{
 	    // page up
-	    key:Ext.EventObject.PAGE_UP, 
+	    key:Ext.EventObject.PAGE_UP,
 	    alt : false,
 	    fn:function(){this.panel.body.scroll('u',this.panel.getHeight(),true);}
 	    },{
@@ -144,11 +144,11 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	    key:'x', fn:function(){ this.pushState(); this.removeRegions(true); },
 	    },{
 	    // delete selected
-	    key:[Ext.EventObject.DELETE,Ext.EventObject.BACKSPACE], 
+	    key:[Ext.EventObject.DELETE,Ext.EventObject.BACKSPACE],
 	    alt:false, stopEvent:true,
-	    fn:function(){ 
-		this.pushState(); 
-		this.removeRegions(true); 
+	    fn:function(){
+		this.pushState();
+		this.removeRegions(true);
 		},
 	    },{
 	    // clear (delete all)
@@ -246,7 +246,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	tb.redoButton.enable();
     },
 
-    /** 
+    /**
      * Implements the redo action.
      */
     redo : function(){
@@ -287,7 +287,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
     getState : function(){
 	var rcfgs = [];
 	var pcfgs = [];
-	Ext.each(this.getRegions(), function(r){ 
+	Ext.each(this.getRegions(), function(r){
 	    rcfgs.push(r.getState());
 	    }, this);
 	this.currPanes.each(function(p){
@@ -315,8 +315,8 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	this.removeRegions();
 	this.setUrl(state.url);
 	var t2r = {};
-	Ext.each(state.regions, function(cfg){ 
-	    var r = this.addRegion(cfg); 
+	Ext.each(state.regions, function(cfg){
+	    var r = this.addRegion(cfg);
 	    t2r[this.makeTag(r)] = r;
 	    }, this);
 	Ext.each(state.panes, function(pcfg){
@@ -345,6 +345,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
      * database logins.
      */
     openLogin : function(){
+	/*
 	var lw = this.loginWindow,
 	    s = this.grid.store;
 	if(!lw){
@@ -355,7 +356,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 		closeAction : 'hide',
 		layout : 'form',
 		x:200, y:100, width:250, autoHeight : true,
-		items : [{ 
+		items : [{
 		    fieldLabel : 'User name',
 		    ref : 'user',
 		    xtype : 'textfield',
@@ -392,6 +393,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	lw.user.setRawValue(s.baseParams.user);
 	lw.password.setRawValue(s.baseParams.password);
 	lw.show();
+    */
     },
 
     // ---------------
@@ -424,7 +426,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 		var _key=irec.get('_image_key'),
 		    pixid=irec.get('pixid');
 		fp.add({
-		    xtype:'fileuploadfield', 
+		    xtype:'fileuploadfield',
 		    name : 'imageKey_'+_key,
 		    fieldLabel:'Figure '+irec.get('figurelabel'),
 		    disabled : pixid ? true : false,
@@ -453,7 +455,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 		    },{
 		    text : 'Upload',
 		    handler : function(){
-			var uw = this.uploadWindow, 
+			var uw = this.uploadWindow,
 			    f=uw.formPanel.form,
 			    lw = this.loginWindow,
 			    u = lw.user.getValue(),
@@ -515,7 +517,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	}
     },
 
-    /** 
+    /**
      * Callback called when a new imgage has been loaded into the offscreen image (osi).
      * Resets the displayed image's size to the actual (osi) size, and sets the displayed image's
      * src to the same url. (Browser has image cached, so this doesn't cost us anything.)
@@ -529,7 +531,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
     // ---------------
 
     /*
-     * For some specified action (which will lose any unsaved changes), 
+     * For some specified action (which will lose any unsaved changes),
      * first asks the user whether to save the changes (yes/no), or to
      * cancel the action. If user answers 'yes', changes are saved, then the
      * action is performed. If 'no', the action is performed with no save.
@@ -661,21 +663,21 @@ PRISM.Editor = Ext.extend(Ext.Window, {
     /**
      * Shorthand for multiplying current magnification by the zoom factor.
      */
-    zoomIn : function(){ 
+    zoomIn : function(){
         this.setMagnification(this.getMagnification() * this.zoomFactor);
     },
 
     /**
      * Shorthand for dividing current magnification by the zoom factor.
      */
-    zoomOut : function(){ 
+    zoomOut : function(){
         this.setMagnification(this.getMagnification() / this.zoomFactor);
     },
 
     /**
      * Shorthand for setting the current magnification to 1.
      */
-    zoomReset : function(){ 
+    zoomReset : function(){
         this.setMagnification(1.0);
     },
 
@@ -760,9 +762,9 @@ PRISM.Editor = Ext.extend(Ext.Window, {
      * Regenerates the labels displayed by regions, and the coordinates displayed by panes.
      */
     syncLabels : function(){
-	var lbl; 
+	var lbl;
 	var r;
-	if(!this.currPanes) 
+	if(!this.currPanes)
 	    // before init, do nothing
 	    return;
 	Ext.each(this.getRegions(), function(r){
@@ -783,8 +785,8 @@ PRISM.Editor = Ext.extend(Ext.Window, {
     associate : function(p, r) {
 	p.region = r;
 	p.set('coords', r.getActualGeometry() );
-	r.on('resize', function(rr){ 
-	    this.set('coords', rr.getActualGeometry());}, 
+	r.on('resize', function(rr){
+	    this.set('coords', rr.getActualGeometry());},
 	    p );
 	this.syncLabels();
     },
@@ -820,15 +822,15 @@ PRISM.Editor = Ext.extend(Ext.Window, {
     createCoveringRegion : function(){
 	var cfg = {
 	    x:0,
-	    y:0, 
-	    width:this.image.getWidth(), 
-	    height:this.image.getHeight(), 
+	    y:0,
+	    width:this.image.getWidth(),
+	    height:this.image.getHeight(),
 	    selected:true
 	    };
 	return this.addRegion(cfg);
     },
 
-    /** 
+    /**
      * Removes the given region and dissociates it from any panes.
      */
     removeRegion : function(r){
@@ -891,7 +893,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
     toggleAllRegions : function(){
 	Ext.each( this.getRegions(), function(){this.toggleSelected();} );
     },
-    
+
     /**
      * Makes all regions invisible or visible (by add/removing css class "prism-hideregions").
      * With no argument, hides all regions. With a boolean arg, sets the hidden state of
@@ -912,7 +914,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
     splitRegions : function( point, orientation, selected ){
 	Ext.each(this.getRegions(selected), function(r){ r.split(point,orientation); });
     },
-    
+
     /**
      * Handler for mouse clicks.
      *
@@ -935,7 +937,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 	    this.pushState();
 
 	    // Helpful shortcut (I hope). If there are no regions and user
-	    // tries to split, automatically create a covering region and 
+	    // tries to split, automatically create a covering region and
 	    // and split that.
 	    if(this.getRegions().length===0)
 		this.createCoveringRegion();
@@ -965,8 +967,8 @@ PRISM.Editor = Ext.extend(Ext.Window, {
      * in all browsers (Firefox, you know who you are), there has to be a focussable
      * element that actually has focus.)
      */
-    focus : function(){ 
-	this.focusEl.focus(); 
+    focus : function(){
+	this.focusEl.focus();
     },
 
     /**
@@ -974,7 +976,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
      * Split out for readability's sake.
      */
     makeMainToolbar : function(){
-	return { 
+	return {
 	    enableOverflow: true,
 	    items : [{
 		text : 'Login',
@@ -1081,7 +1083,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 		scope : this
 		},
 		'-', '->', '-',
-		{ 
+		{
 		text : 'SelectAll',
 		tooltip : 'Select all regions.',
 		handler : this.selectAll,
@@ -1145,14 +1147,14 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 		e.stopEvent();
 		return e.getTarget('.prism-region');
 		},
-	    onNodeEnter : function(t, dd, e, data){ 
+	    onNodeEnter : function(t, dd, e, data){
 		this.editor.unselectAll();
 		this.editor.select(Ext.getCmp(t.id));
 		},
-	    onNodeOver : function(t, dd, e, data){ 
+	    onNodeOver : function(t, dd, e, data){
 		return Ext.dd.DropZone.prototype.dropAllowed;
 	        },
-	    onNodeOut : function(t, dd, e, data){ 
+	    onNodeOut : function(t, dd, e, data){
 		this.editor.unselect(Ext.getCmp(t.id));
 	        },
 	    onNodeDrop : function(t, dd, e, data){
@@ -1217,8 +1219,8 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 		    this.proxy.el.setSize( wh );
 		}},
 	    // override this to prevent animation after a "failed drop".
-	    afterRepair : function(){ 
-	        this.dragging=false; 
+	    afterRepair : function(){
+	        this.dragging=false;
 		},
 	    onMouseUp : function(e){
 		if(! this.dragData.didDrag){
@@ -1235,19 +1237,19 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 			var el = this.proxy.el;
 			var exy = this.currXY;
 			var pxy = this.editor.panel.el.getXY();
-			var cfg = { 
+			var cfg = {
 			    x:exy[0]-pxy[0] + ed.scrollLeft,
 			    y:exy[1]-pxy[1] + ed.scrollTop,
 			    width:el.getWidth(),
 			    height:el.getHeight(),
 			    };
-			if(cfg.width  >= this.editor.minRegionWidth 
+			if(cfg.width  >= this.editor.minRegionWidth
 			&& cfg.height >= this.editor.minRegionHeight){
 			    this.editor.pushState();
 			    this.editor.unselectAll();
 			    this.editor.select(this.editor.addRegion(cfg));
 			}
-		    } 
+		    }
 		}},
 	});
     }

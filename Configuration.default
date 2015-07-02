@@ -13,11 +13,13 @@ source ${MGICONFIG}/master.config.csh
 setenv EXT "ext-3.3.0"
 setenv IMAGEPANE_URL "./server/imagePaneData.cgi"
 setenv HELP_URL "./www/html/help.html"
-setenv PIXELDB_SERVER `echo $WEBSHARE_URL | sed 's/\(http:\/\/[^/]*\)\/.*/\1/'`
+#setenv PIXELDB_SERVER `echo $WEBSHARE_URL | sed 's/\(http:\/\/[^/]*\)\/.*/\1/'`
 
 if ( ${INSTALL_TYPE} == "dev" ) then
+    setenv PIXELDB_SERVER "http://bheidev01"
     setenv PIXELDB_PATH "/usrlocalmgi/test/pixeldb/www"
 else
+    setenv PIXELDB_SERVER "http://bhmgiei01"
     setenv PIXELDB_PATH "/usrlocalmgi/live/pixeldb/www"
 endif
 

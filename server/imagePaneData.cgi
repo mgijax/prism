@@ -4,4 +4,5 @@
 #
 # Wrapper script for invoking imagePaneData CGI service.
 #
-python imagePaneData.py
+source ../Configuration
+/usr/local/bin/python imagePaneData.py
