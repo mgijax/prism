@@ -66,7 +66,10 @@ class Handler:
 		p.width,
 		p.height
 	FROM 
-		IMG_Image i left outer join ACC_Accession px on i._image_key = px._object_key, 
+		IMG_Image i 
+		  full outer join 
+		  ACC_Accession px 
+		  on (i._image_key = px._object_key and px._logicaldb_key = %d), 
 		BIB_Refs r, 
 		ACC_Accession a, 
 		IMG_ImagePane p,
@@ -82,11 +85,9 @@ class Handler:
 		AND i._imageclass_key = c._term_key
 		AND i._imagetype_key  = t._term_key
 		AND p._image_key = i._image_key
-		AND i._image_key = px._object_key
-		AND px._logicaldb_key = %d
 		ORDER BY i.figurelabel, i._image_key, p.panelabel
 
-		''' % (jnum, PIXELDB_LDBKEY)
+		''' % (PIXELDB_LDBKEY, jnum)
 	res = []
 	for r in db.sql(query,'auto'):
 		imageInfo = {}
