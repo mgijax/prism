@@ -109,7 +109,10 @@ class Handler:
 		imageInfo['height'] = r['height']
 		imageInfo['width'] = r['width']
 		imageInfo['figurelabel'] = "%s" % (str(r['figurelabel']))
-		imageInfo['panelabel'] = "%s" % (str(r['panelabel']))
+		if r['panelabel'] is None:
+			imageInfo['panelabel'] = " " 
+		else:
+			imageInfo['panelabel'] = "%s" % (str(r['panelabel']))
 		imageInfo['class'] = "%s" % (str(r['class']))
 		imageInfo['type'] = "%s" % (str(r['type']))
 		res.append(imageInfo)
