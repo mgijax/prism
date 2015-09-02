@@ -21,4 +21,4 @@ setenv PIXELDB_PATH "/usrlocalmgi/live/pixeldb/www"
 
 setenv PIXELDB_FETCH_URL "${PIXELDB_SERVER}${PIXELDB_PATH}/fetch_pixels.cgi?id="
 setenv PIXELDB_UPLOAD_URL "${PIXELDB_SERVER}${PIXELDB_PATH}/private/submitprocess.cgi"
-setenv JFILE_URL "/usrlocalmgi/jfilescanner/current/Jfiles/"
+setenv JFILE_URL "/jfilescanner/Jfiles/"
