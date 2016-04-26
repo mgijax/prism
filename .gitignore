@@ -1,0 +1,7 @@
+*.pyc
+Configuration
+prismConfig.py
+prism-config.js
+/index.html
+/www/js/ext
+/www/js/ext*/
