@@ -75,7 +75,7 @@ class Handler:
 		IMG_ImagePane p,
 		VOC_Term c, 
 		VOC_Term t	
-	WHERE a.accid = '%s'
+	WHERE lower(a.accid) = lower('%s')
 		AND a._object_key = r._refs_key
 		AND a._logicaldb_key = 1
 		AND a._mgitype_key = 1
