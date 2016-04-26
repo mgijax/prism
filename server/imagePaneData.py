@@ -15,6 +15,8 @@ import logging
 import prismConfig
 sys.path.append( prismConfig.MGI_PYTHONLIB )
 import db
+db.setAutoTranslate(False)
+db.setAutoTranslateBE(False)
 db.set_sqlServer(prismConfig.PG_DBSERVER)
 db.set_sqlDatabase(prismConfig.PG_DBNAME)
 
