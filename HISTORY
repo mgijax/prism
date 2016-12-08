@@ -1,8 +1,7 @@
-TAG: prism-tr12069-1
-DATE: 11/21/16
+TAG: prism-6-0-7-1
+DATE: 12/08/16
 STAFF: sc
-CHANGES: 
-removed setAutoTranslate*' server/imagePaneData.py
+CHANGES: Merge tr12069 branch to trunk
 
 TAG: prism-tr12069-BP
 DATE: 11/21/16
