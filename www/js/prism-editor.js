@@ -334,9 +334,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 
     // ---------------
     showPdf: function(){
-	var j = parseInt(this.jnum.match(/\d+/)[0]),
-	    m = j - j%500,
-	    u = PRISM.config.JFILE_URL + m + "/J" + j + ".pdf";
+	var u = PRISM.config.JFILE_URL + this.jnum;
 	open(u);
     },
 
