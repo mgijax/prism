@@ -9,7 +9,7 @@ import os
 import sys
 import cgi
 import types
-import cgitb; cgitb.enable()
+#import cgitb; cgitb.enable()
 import logging
 
 import prismConfig
