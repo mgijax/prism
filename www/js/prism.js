@@ -14,7 +14,16 @@ PRISM.init = function(cfg){
     v.add(w);
     w.show()
     w.openLogin()
-    w.setJnum('J:47700')
+    // Allow starting J# to be specified in the hash part of the URL, like so:
+    //    http://bheidev01.jax.org/prism/#J:42707
+    // The "J:" is required.
+    var initialJnum
+    var h = window.location.hash
+    if (h) {
+	initialJnum = h.substring(1).trim()
+	window.location.hash = ''
+    }   
     // other good examples: J:58080, J:172713, J:168626, J:102528,
     // J:93300, J:30342, J:47700, J:64590, J:42707, J:12604
+    w.setJnum(initialJnum || 'J:47700')
 }
