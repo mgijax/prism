@@ -395,90 +395,6 @@ PRISM.Editor = Ext.extend(Ext.Window, {
     },
 
     // ---------------
-    openUpload : function(){
-	var fp;
-	if(!this.uploadWindow){
-	    fp = new Ext.form.FormPanel({
-		autoScroll : true,
-		padding : 6,
-		fileUpload : true,
-		url : PRISM.config.PIXELDB_UPLOAD_URL,
-		ref : 'formPanel',
-		submitEmptyText : false,
-		items : [{
-		    xtype : 'hidden',
-		    name : 'image_submission_form'
-		    },{
-		    xtype : 'hidden',
-		    name : 'jnum',
-		    value : this.jnum.slice(2)
-		    },{
-		    xtype : 'hidden',
-		    name : 'userID'
-		    },{
-		    xtype : 'hidden',
-		    name : 'pwd'
-		    }]
-		});
-	    this.imgStore.each(function(irec){
-		var _key=irec.get('_image_key'),
-		    pixid=irec.get('pixid');
-		fp.add({
-		    xtype:'fileuploadfield',
-		    name : 'imageKey_'+_key,
-		    fieldLabel:'Figure '+irec.get('figurelabel'),
-		    disabled : pixid ? true : false,
-		    value : pixid && ('Current pix id: ' + pixid) || 'Select file...',
-		    listeners : {
-			fileselected : function(f,v){
-			    f.setRawValue(v.split(/[:\\\/]/).slice(-1)[0]);
-			} }
-		    });
-	    }, this);
-	    this.uploadWindow = new Ext.Window({
-		title : "Upload Images for Jnum " + this.jnum,
-		modal : true,
-		closable : true,
-		closeAction : 'hide',
-		layout : 'fit',
-		x:100, y:50, width:330, height:250,
-		items : fp,
-		buttons : [{
-		    text : 'Cancel',
-		    handler : function(){
-			this.uploadWindow.formPanel.form.reset();
-			this.uploadWindow.hide();
-		        },
-		    scope : this
-		    },{
-		    text : 'Upload',
-		    handler : function(){
-			var uw = this.uploadWindow,
-			    f=uw.formPanel.form,
-			    lw = this.loginWindow,
-			    u = lw.user.getValue(),
-			    p = lw.password.getValue();
-			f.findField('userID').setValue(u);
-			f.findField('pwd').setValue(p);
-			f.items.each(function(inp){
-			    if(inp.xtype==='fileuploadfield')
-				inp.setDisabled(inp.fileInput.dom.value === "");
-			    }, this);
-			f.submit();
-			uw.hide();
-		        },
-		    scope : this
-		    }]
-		});
-	}
-
-	this.uploadWindow.formPanel.form.items.each(function(inp){
-	    inp.setDisabled(inp.initialConfig.disabled);
-	    });
-	this.uploadWindow.show();
-    },
-
-    // ---------------
 
     /**
      * Returns the list (a MixedCollection) of pane records for the currently opened image.
@@ -715,7 +631,7 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 		return;
 	    }
 	    this.panel.body.removeClass('prism-noimage');
-	    this.setUrl(PRISM.config.PIXELDB_FETCH_URL+px);
+	    this.setUrl(PRISM.config.IMAGE_FETCH_URL+px);
 	    t2r = {};
 	    this.currPanes.each(function(p){
 	        var c = p.get('coords'),
@@ -1015,12 +931,6 @@ PRISM.Editor = Ext.extend(Ext.Window, {
 		text : 'Save',
 		tooltip : 'Save image pane changes.',
 		handler : function(){ this.save(); this.focus(); },
-		scope : this
-		},'-',{
-		text : 'Upload',
-		disabled : true,
-		tooltip : 'Upload image files for this Jnum.',
-		handler : function(){ this.openUpload(); this.focus(); },
 		scope : this
 		},'-',{
 		text : '-1',

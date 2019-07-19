@@ -12,13 +12,9 @@ setenv IMAGEPANE_URL "./server/imagePaneData.cgi"
 setenv HELP_URL "./www/html/help.html"
 
 if ( ${INSTALL_TYPE} == "dev" ) then
-    setenv PIXELDB_SERVER "http://bheidev01"
+    setenv IMAGE_SERVER "bhmgipub01lt.jax.org"
 else
-    setenv PIXELDB_SERVER "http://bhmgiei01"
+    setenv IMAGE_SERVER "bhmgipub01lp.jax.org"
 endif
-
-setenv PIXELDB_PATH "/usrlocalmgi/live/pixeldb/www"
-
-setenv PIXELDB_FETCH_URL "${PIXELDB_SERVER}${PIXELDB_PATH}/fetch_pixels.cgi?id="
-setenv PIXELDB_UPLOAD_URL "${PIXELDB_SERVER}${PIXELDB_PATH}/private/submitprocess.cgi"
+setenv IMAGE_FETCH_URL "http://${IMAGE_SERVER}/webshare/fetch_pixels.cgi?id="
 setenv JFILE_URL "http://bhmgiapp01.jax.org/usrlocalmgi/live/pdfviewer/pdfviewer.cgi?id="
