@@ -18,3 +18,10 @@ else
 endif
 setenv IMAGE_FETCH_URL "http://${IMAGE_SERVER}/webshare/fetch_pixels.cgi?id="
 setenv JFILE_URL "http://bhmgiapp01.jax.org/usrlocalmgi/live/pdfviewer/pdfviewer.cgi?id="
+#
+setenv PYTHONINCLUDE "/opt/python3.7/include"
+setenv PYTHONLIB "/opt/python3.7/lib"
+setenv PYTHONPATH "/opt/python3.7/lib:${MGI_LIVE}/lib/python"
+setenv PYTHON "/opt/python3.7/bin/python3"
+setenv LD_LIBRARY_PATH "/usr/lib:/usr/local/lib:/usr/local/pgsql/lib:/opt/python3.7/lib/python3.7/site-packages"
+
