@@ -29,10 +29,6 @@ class Handler:
 
     def go(self):
         opts = cgi.FieldStorage()
-        #if opts.has_key('user'):
-        #    db.set_sqlUser(opts['user'].value)
-        #if opts.has_key('password'):
-        #    db.set_sqlPassword(opts['password'].value)
         if 'jnum' in opts:
             jnum = opts['jnum'].value
             self.retrieve(jnum)
